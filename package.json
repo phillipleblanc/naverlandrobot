@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "build:docker": "docker build . -t ghcr.io/phillipleblanc/naverlandrobot:latest",
     "start": "node --es-module-specifier-resolution=node -r dotenv/config dist/main.js",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint-fix": "yarn run lint --fix"
