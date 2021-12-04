@@ -9,7 +9,8 @@
     "strict": true /* Enable all strict type-checking options. */,
     "noImplicitThis": true /* Enable error reporting when `this` is given the type `any`. */,
     "noUnusedLocals": true /* Enable error reporting when a local variables aren't read. */,
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "sourceMap": true
   },
-  "include": ["./src/**/*.ts"],
+  "include": ["./src/**/*.ts"]
 }
