@@ -18,4 +18,6 @@ COPY --from=dist /build/node_modules ./node_modules
 COPY --from=dist /build/package*.json ./
 COPY --from=dist /build/dist ./dist
 
+EXPOSE 3000
+
 ENTRYPOINT ["node", "--es-module-specifier-resolution=node", "dist/main.js"]
