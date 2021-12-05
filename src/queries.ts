@@ -27,7 +27,7 @@ export const queryBuildingName = `let result = document.querySelector('#complexT
    result ? result.innerText : undefined
   `
 
-export const queryUnits = `const unitsNodes = document.querySelectorAll('#articleListArea .item_inner')
+export const queryUnits = `const unitsNodes = document.querySelectorAll('#articleListArea > .item > .item_inner')
 
 const unitsNodesArray = Array.from(unitsNodes)
 
