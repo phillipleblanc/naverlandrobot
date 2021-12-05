@@ -23,6 +23,21 @@ jobs:
           yarn build
           yarn lint
 
+  deploy:
+    needs: docker_build
+    name: Deploy naverlandrobot
+    runs-on: self-hosted
+    environment: prod
+
+    defaults:
+      run:
+        working-directory: /home/phillip
+
+    steps:
+      - run: sudo docker pull ghcr.io/phillipleblanc/naverlandrobot:latest
+      - run: sudo docker rm --force naverland
+      - run: sudo docker run --env-file ./naverland.env --name naverland -p 8000:8000 --init --cap-add=SYS_ADMIN --restart=always -d ghcr.io/phillipleblanc/naverlandrobot:latest
+
   docker_build:
     name: Build naverlandrobot image
     runs-on: ubuntu-latest
