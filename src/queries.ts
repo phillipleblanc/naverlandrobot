@@ -23,15 +23,24 @@ unitsNodesArray.map((unitNode) => {
 
 */
 
-export const obeliskQueryUnits = `const unitsNodes = document.querySelectorAll('#ct .infinite_scroll .item_inner')
+export const queryBuildingName = `let result = document.querySelector('#complexTitle')
+   result ? result.innerText : undefined
+  `
+
+export const queryUnits = `const unitsNodes = document.querySelectorAll('#ct .infinite_scroll .item_inner')
 
 const unitsNodesArray = Array.from(unitsNodes)
 
 unitsNodesArray.map((unitNode) => {
+    let typeQuery = unitNode.querySelector('.price_line .type')
+    if (!typeQuery) {
+      return undefined
+    }
+
     let contractType = unitNode.querySelector('.price_line .type').innerText
     let price = unitNode.querySelector('.price_line .price').innerText
     let unitType = unitNode.querySelector('.info_area .line .type').innerText
     let unitSpec = unitNode.querySelector('.info_area .line .spec').innerText
     return { contractType, price, unitType, unitSpec }
-})
+}).filter((result) => result !== undefined)
 `

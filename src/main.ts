@@ -1,7 +1,7 @@
 import express from "express"
 
 import { getUnits } from "./naver.js"
-import { KnownBuildings, KnownBuildingsMap } from "./buildings.js"
+import { getBuildingFromId } from "./buildings.js"
 
 const app = express()
 const port = process.env.PORT || 8000
@@ -16,58 +16,69 @@ app.get("/health", async (_req: express.Request, res: express.Response) => {
   res.status(200).send("ok\n")
 })
 
-app.get("/buildings", (_req: express.Request, res: express.Response) => {
-  res.status(200).json(
-    KnownBuildings.map((building) => {
-      return { id: building.id, name: building.name }
-    })
-  )
-})
-
 app.get(
   "/buildings/:building",
-  (req: express.Request, res: express.Response) => {
-    const buildingId = req.params.building
+  async (req: express.Request, res: express.Response) => {
+    const buildingId = parseInt(req.params.building)
 
-    const building = KnownBuildingsMap.get(buildingId)
-
-    if (building) {
-      res.status(200).json({ id: building.id, name: building.name })
-    } else {
-      res.sendStatus(404)
+    if (!buildingId) {
+      res.sendStatus(400)
+      return
     }
+
+    const building = await getBuildingFromId(buildingId)
+
+    if (!building) {
+      res.sendStatus(404)
+      return
+    }
+
+    res.status(200).json({ id: buildingId, name: building.name })
   }
 )
 
 app.get(
   "/buildings/:building/units",
   async (req: express.Request, res: express.Response) => {
-    const buildingId = req.params.building
-    const building = KnownBuildingsMap.get(buildingId)
+    const buildingId = parseInt(req.params.building)
+
+    if (!buildingId) {
+      res.sendStatus(400)
+      return
+    }
+
+    const building = await getBuildingFromId(buildingId)
 
     if (!building) {
       res.sendStatus(404)
       return
     }
 
-    const result = await getUnits(building, false)
-    res.status(200).json(result)
+    const units = await getUnits(building, false)
+    res.status(200).json(units)
   }
 )
 
 app.get(
   "/buildings/:building/units/weolse",
   async (req: express.Request, res: express.Response) => {
-    const buildingId = req.params.building
-    const building = KnownBuildingsMap.get(buildingId)
+    const buildingId = parseInt(req.params.building)
+
+    if (!buildingId) {
+      res.sendStatus(400)
+      return
+    }
+
+    const building = await getBuildingFromId(buildingId)
 
     if (!building) {
       res.sendStatus(404)
       return
     }
 
-    const result = await getUnits(building, true)
-    res.status(200).json(result)
+    const units = await getUnits(building, true)
+
+    res.status(200).json(units)
   }
 )
 

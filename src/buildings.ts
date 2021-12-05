@@ -1,22 +1,27 @@
-import { obeliskQueryUnits } from "./queries.js"
+import { queryPage } from "./browser.js"
+import { queryBuildingName, queryUnits } from "./queries.js"
 
 export interface Building {
-  id: string
+  id: number
   name: string
   naverLink: string
   unitsQuery: string
 }
 
-const Obelisk: Building = {
-  id: "obelisk",
-  name: "Hanwha Obelisk",
-  naverLink:
-    "https://new.land.naver.com/complexes/12240?ms=37.539953,126.945308,17&a=APT:ABYG:JGC&e=RETAIL&articleNo=2132027944",
-  unitsQuery: obeliskQueryUnits,
-}
+export async function getBuildingFromId(
+  id: number
+): Promise<Building | undefined> {
+  const naverLink = `https://new.land.naver.com/complexes/${id}`
+  const buildingName = await queryPage(naverLink, queryBuildingName)
 
-export const KnownBuildings = [Obelisk]
-export const KnownBuildingsMap: Map<string, Building> = new Map<
-  string,
-  Building
->([["obelisk", Obelisk]])
+  if (!buildingName) {
+    return undefined
+  }
+
+  return {
+    id: id,
+    name: buildingName,
+    naverLink: naverLink,
+    unitsQuery: queryUnits,
+  }
+}
