@@ -55,7 +55,7 @@ app.get(
     }
 
     const units = await getUnits(building, false)
-    res.status(200).json(units)
+    res.status(200).json({ num: units.length, units })
   }
 )
 
@@ -78,7 +78,7 @@ app.get(
 
     const units = await getUnits(building, true)
 
-    res.status(200).json(units)
+    res.status(200).json({ num: units.length, units })
   }
 )
 
