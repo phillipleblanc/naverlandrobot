@@ -1,11 +1,13 @@
 import puppeteer from "puppeteer"
 
+async function defaultPreprocess() {
+  // The default function does nothing
+}
+
 export async function queryPage(
   url: string,
   query: string,
-  preprocess: (page: puppeteer.Page) => Promise<void> = async (
-    _p: puppeteer.Page
-  ) => {}
+  preprocess: (page: puppeteer.Page) => Promise<void> = defaultPreprocess
 ) {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
@@ -13,7 +15,7 @@ export async function queryPage(
 
   await preprocess(page)
 
-  let results = await page.evaluate(query)
+  const results = await page.evaluate(query)
 
   await browser.close()
 
