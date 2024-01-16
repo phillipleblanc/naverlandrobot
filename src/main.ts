@@ -2,6 +2,7 @@ import express from "express"
 
 import { getUnits } from "./naver.js"
 import { getBuildingFromId } from "./buildings.js"
+import { parseKoreanWon } from "./won.js"
 
 const app = express()
 const port = process.env.PORT || 8000
@@ -37,6 +38,13 @@ app.get(
   }
 )
 
+type Unit = {
+  contractType: string
+  price: string
+  unitType: string
+  unitSpec: string
+}
+
 app.get(
   "/buildings/:building/units",
   async (req: express.Request, res: express.Response) => {
@@ -54,29 +62,18 @@ app.get(
       return
     }
 
-    const units = await getUnits(building, false)
-    res.status(200).json({ num: units.length, units })
-  }
-)
+    let units: Unit[] = await getUnits(building, false)
+    const contractType = req.query.contractType
 
-app.get(
-  "/buildings/:building/units/weolse",
-  async (req: express.Request, res: express.Response) => {
-    const buildingId = parseInt(req.params.building)
-
-    if (!buildingId) {
-      res.sendStatus(400)
-      return
+    if (contractType) {
+      units = units.filter((unit) => unit.contractType === contractType)
     }
 
-    const building = await getBuildingFromId(buildingId)
-
-    if (!building) {
-      res.sendStatus(404)
-      return
+    const priceFilter = req.query.price
+    if (priceFilter) {
+      const price = parseKoreanWon(priceFilter as string)
+      units = units.filter((unit) => parseKoreanWon(unit.price) <= price)
     }
-
-    const units = await getUnits(building, true)
 
     res.status(200).json({ num: units.length, units })
   }

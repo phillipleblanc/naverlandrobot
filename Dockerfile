@@ -1,4 +1,4 @@
-FROM node:16 as dist
+FROM node:20 as dist
 
 WORKDIR /build
 
@@ -10,7 +10,7 @@ RUN yarn install
 RUN yarn build
 
 ### App code
-FROM node:16-slim
+FROM node:20-slim
 
 RUN apt-get update \
   && apt-get install -y wget gnupg \
